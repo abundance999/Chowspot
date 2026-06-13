@@ -164,17 +164,47 @@ export function captureCurrentLocation() {
       reject(new Error('Geolocation is not supported by this browser.'));
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      (err) => {
-        const messages = {
-          1: 'Location access was denied. Please allow location access and try again.',
-          2: 'Could not detect your location. Make sure you have a GPS signal.',
-          3: 'Location request timed out. Please try again.',
-        };
-        reject(new Error(messages[err.code] || 'Unknown location error.'));
-      },
-      { timeout: 15000, enableHighAccuracy: true }
-    );
+
+    const requestLocation = (options = {}) => {
+      const defaultOptions = { timeout: 30000, enableHighAccuracy: true, ...options };
+      
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          console.log('Location captured:', pos.coords);
+          resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        },
+        (err) => {
+          console.error('Geolocation error:', err.code, err.message);
+          
+          const messages = {
+            1: 'Location access was denied. Please enable location permissions and try again.',
+            2: 'Could not detect your location. Make sure GPS is enabled and you have a clear view of the sky.',
+            3: 'Location request timed out. Please try again.',
+            4: 'An unknown error occurred while retrieving your location.',
+          };
+          
+          const errorMsg = messages[err.code] || `Location error: ${err.message}`;
+          reject(new Error(errorMsg));
+        },
+        defaultOptions
+      );
+    };
+
+    if (!navigator.permissions?.query) {
+      console.log('Permissions API not available, requesting location directly');
+      requestLocation();
+      return;
+    }
+
+    navigator.permissions
+      .query({ name: 'geolocation' })
+      .then((permissionStatus) => {
+        console.log('Geolocation permission status:', permissionStatus.state);
+        requestLocation();
+      })
+      .catch((err) => {
+        console.log('Permissions API error, requesting location directly:', err);
+        requestLocation();
+      });
   });
 }

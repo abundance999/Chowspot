@@ -80,7 +80,7 @@ export default function ContactButtons({ phone, whatsapp, lat, lng }) {
             </div>
             <span className="text-xs font-semibold text-gray-700 text-center">Directions</span>
           </a>
-        )}}
+        )}
 
       </div>
     </div>

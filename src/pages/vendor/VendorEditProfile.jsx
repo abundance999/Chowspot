@@ -314,18 +314,57 @@ export default function VendorEditProfile({ onSaved, isOnboarding = false }) {
                 </Button>
               </div>
             ) : (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-11"
-                onClick={handleCaptureLocation}
-                disabled={locating}
-              >
-                {locating
-                  ? <><Loader2 className="h-4 w-4 animate-spin" /> Detecting location…</>
-                  : <><MapPin className="h-4 w-4" /> Capture my location</>
-                }
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-11"
+                  onClick={handleCaptureLocation}
+                  disabled={locating}
+                >
+                  {locating
+                    ? <><Loader2 className="h-4 w-4 animate-spin" /> Detecting location…</>
+                    : <><MapPin className="h-4 w-4" /> Capture my location</>
+                  }
+                </Button>
+
+                {/* Manual entry fallback for development/desktop testing */}
+                <details className="text-xs text-gray-500">
+                  <summary className="cursor-pointer hover:text-gray-600">Or enter coordinates manually (for testing)</summary>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <Input
+                      type="number"
+                      placeholder="Latitude"
+                      step="0.00001"
+                      value={form.latitude || ''}
+                      onChange={(e) => setForm((f) => ({ ...f, latitude: parseFloat(e.target.value) || null }))}
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Longitude"
+                      step="0.00001"
+                      value={form.longitude || ''}
+                      onChange={(e) => setForm((f) => ({ ...f, longitude: parseFloat(e.target.value) || null }))}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="w-full mt-2"
+                    onClick={() => {
+                      if (form.latitude && form.longitude) {
+                        setLocationSet(true);
+                        toast.success('Location set manually.');
+                      } else {
+                        toast.error('Please enter both latitude and longitude.');
+                      }
+                    }}
+                  >
+                    Set location
+                  </Button>
+                </details>
+              </div>
             )}
           </div>
 

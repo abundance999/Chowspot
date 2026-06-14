@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, UtensilsCrossed, ArrowRight } from 'lucide-react';
+import { Search, UtensilsCrossed, ArrowRight, Clipboard, MapPin } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 
@@ -108,23 +108,23 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               {[
                 {
-                  emoji: '🔍',
+                  icon: Search,
                   title: 'Search for food',
                   desc: 'Type what you\'re craving — jollof, beans, suya — and we\'ll show you who sells it nearby.',
                 },
                 {
-                  emoji: '📋',
+                  icon: Clipboard,
                   title: 'See the menu & prices',
                   desc: 'Check the full menu, read reviews from other customers, and find the best deal.',
                 },
                 {
-                  emoji: '📍',
+                  icon: MapPin,
                   title: 'Reach out directly',
                   desc: 'Call, SMS, WhatsApp the vendor or get turn-by-turn directions to their location.',
                 },
               ].map((step) => (
                 <div key={step.title} className="text-center">
-                  <div className="text-4xl mb-4">{step.emoji}</div>
+                  <step.icon className="h-10 w-10 mx-auto mb-4 text-brand-600" aria-hidden />
                   <h3 className="font-bold text-gray-900 mb-2">{step.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
                 </div>

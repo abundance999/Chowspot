@@ -192,8 +192,8 @@ export default function VendorEditProfile({ onSaved, isOnboarding = false }) {
           <div>
             <Label htmlFor="category">Type of spot *</Label>
             <Select id="category" value={form.category} onChange={set('category')}>
-              <option value="restaurant">🍽️ Restaurant</option>
-              <option value="roadside">🥘 Roadside / Kiosk / Mama Put</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="roadside">Roadside / Kiosk / Mama Put</option>
             </Select>
           </div>
 

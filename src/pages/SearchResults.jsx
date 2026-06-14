@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, Loader2, ArrowLeft } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2, ArrowLeft, UtensilsCrossed } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import VendorCard from '@/components/search/VendorCard';
 import { searchFoodSpots, getAllFoodSpots } from '@/lib/search';
 
 const FILTERS = [
   { label: 'All spots',   value: null },
-  { label: '🍽️ Restaurant', value: 'restaurant' },
-  { label: '🥘 Roadside',   value: 'roadside' },
+  { label: 'Restaurant', value: 'restaurant' },
+  { label: 'Roadside',   value: 'roadside' },
 ];
 
 export default function SearchResults() {
@@ -129,7 +129,7 @@ export default function SearchResults() {
 function EmptyState({ query }) {
   return (
     <div className="text-center py-20">
-      <p className="text-5xl mb-4">🍽️</p>
+      <UtensilsCrossed className="h-12 w-12 mx-auto mb-4 text-gray-300" />
       <h3 className="font-bold text-gray-900 text-lg mb-2">
         {query ? `No results for "${query}"` : 'No food spots yet'}
       </h3>

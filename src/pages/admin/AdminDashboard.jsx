@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CheckCircle2, XCircle, Loader2, LogOut,
-  UtensilsCrossed, Star, Trash2, ExternalLink,
+  UtensilsCrossed, Star, Trash2, ExternalLink, Truck,
   RefreshCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -163,7 +163,7 @@ function VendorRow({ vendor, onApprove, onReject, onViewReviews, reviewsOpen }) 
         <div className="h-14 w-14 shrink-0 rounded-xl bg-orange-50 overflow-hidden">
           {vendor.cover_photo_url
             ? <img src={vendor.cover_photo_url} alt={vendor.business_name} className="h-full w-full object-cover" />
-            : <div className="h-full w-full flex items-center justify-center">🍽️</div>
+            : <div className="h-full w-full flex items-center justify-center"><UtensilsCrossed className="h-8 w-8 text-gray-300" /></div>
           }
         </div>
 
@@ -175,7 +175,17 @@ function VendorRow({ vendor, onApprove, onReject, onViewReviews, reviewsOpen }) 
               {vendor.is_approved ? 'Live' : 'Pending'}
             </Badge>
             <Badge variant={vendor.category === 'restaurant' ? 'brand' : 'default'}>
-              {vendor.category === 'restaurant' ? '🍽️ Restaurant' : '🥘 Roadside'}
+              {vendor.category === 'restaurant' ? (
+                <span className="inline-flex items-center gap-2">
+                  <UtensilsCrossed className="h-4 w-4" />
+                  <span>Restaurant</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2">
+                  <Truck className="h-4 w-4" />
+                  <span>Roadside</span>
+                </span>
+              )}
             </Badge>
           </div>
           <p className="text-sm text-gray-500 mt-0.5 truncate">{vendor.phone}</p>

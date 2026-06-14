@@ -96,7 +96,17 @@ export default function SpotPage() {
               <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">{vendor.business_name}</h1>
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <Badge variant={vendor.category === 'restaurant' ? 'brand' : 'yellow'}>
-                  {vendor.category === 'restaurant' ? '🍽️ Restaurant' : '🥘 Roadside'}
+                  {vendor.category === 'restaurant' ? (
+                    <span className="inline-flex items-center gap-2">
+                      <UtensilsCrossed className="h-4 w-4" />
+                      <span>Restaurant</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      <span>Roadside</span>
+                    </span>
+                  )}
                 </Badge>
                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${open ? 'badge-open' : 'badge-closed'}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-green-500' : 'bg-red-400'}`} />

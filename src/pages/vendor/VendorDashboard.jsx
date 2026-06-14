@@ -68,7 +68,7 @@ export default function VendorDashboard() {
           <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-2xl p-4 mb-6">
             <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
             <div>
-              <p className="font-semibold text-green-800">You're live on ChowSpot 🎉</p>
+              <p className="font-semibold text-green-800">You're live on ChowSpot</p>
               <p className="text-sm text-green-700 mt-0.5">
                 Customers can find and contact you.{' '}
                 <Link to={`/spot/${vendor.id}`} className="underline font-semibold">
@@ -94,7 +94,17 @@ export default function VendorDashboard() {
                 <h2 className="text-xl font-extrabold text-gray-900">{vendor.business_name}</h2>
                 <div className="flex flex-wrap items-center gap-2 mt-1">
                   <Badge variant={vendor.category === 'restaurant' ? 'brand' : 'yellow'}>
-                    {vendor.category === 'restaurant' ? '🍽️ Restaurant' : '🥘 Roadside'}
+                    {vendor.category === 'restaurant' ? (
+                      <span className="inline-flex items-center gap-2">
+                        <UtensilsCrossed className="h-4 w-4" />
+                        <span>Restaurant</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        <span>Roadside</span>
+                      </span>
+                    )}
                   </Badge>
                   {vendor.rating_count > 0 && (
                     <span className="flex items-center gap-1 text-sm text-amber-600">

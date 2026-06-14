@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Star, Clock, MapPin, ChevronRight, UtensilsCrossed } from 'lucide-react';
+import { Star, Clock, MapPin, ChevronRight, UtensilsCrossed, Truck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { isOpenNow, formatNaira, menuItemPriceLabel } from '@/lib/utils';
 
@@ -44,7 +44,17 @@ export default function VendorCard({ vendor, matchingItems = [] }) {
         {/* Category badge — top left */}
         <div className="absolute top-3 left-3">
           <Badge variant={vendor.category === 'restaurant' ? 'brand' : 'yellow'}>
-            {vendor.category === 'restaurant' ? '🍽️ Restaurant' : '🥘 Roadside'}
+            {vendor.category === 'restaurant' ? (
+              <span className="inline-flex items-center gap-2">
+                <UtensilsCrossed className="h-4 w-4" />
+                <span>Restaurant</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <Truck className="h-4 w-4" />
+                <span>Roadside</span>
+              </span>
+            )}
           </Badge>
         </div>
       </div>

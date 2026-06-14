@@ -433,7 +433,9 @@ function MenuItemRow({ item, isRoadside, expanded, onToggleExpand, onEdit, onDel
         <div className="h-14 w-14 shrink-0 rounded-xl bg-gray-50 overflow-hidden">
           {item.photo_url
             ? <img src={item.photo_url} alt={item.name} className="h-full w-full object-cover" />
-            : <div className="h-full w-full flex items-center justify-center text-xl">🍽️</div>
+            : <div className="h-full w-full flex items-center justify-center">
+                <UtensilsCrossed className="h-8 w-8 text-gray-300" />
+              </div>
           }
         </div>
 

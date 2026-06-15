@@ -179,3 +179,51 @@ export function capitalise(str) {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// ── Distance & geolocation ─────────────────────────────────────────────────
+
+/**
+ * Calculate distance between two coordinates using Haversine formula.
+ * Returns distance in kilometers.
+ * @param {number} lat1 - user latitude
+ * @param {number} lon1 - user longitude
+ * @param {number} lat2 - vendor latitude
+ * @param {number} lon2 - vendor longitude
+ * @returns {number} distance in kilometers
+ */
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+/**
+ * Get user's current geolocation using Geolocation API.
+ * @returns {Promise<{lat: number, lng: number}>}
+ * @throws {Error} if geolocation is denied or unavailable
+ */
+export function getUserLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation not supported by your browser.'));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      (err) => {
+        reject(new Error(`Geolocation error: ${err.message}`));
+      },
+      { timeout: 5000 }
+    );
+  });
+}

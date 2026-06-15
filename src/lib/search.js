@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { calculateDistance, getUserLocation } from './utils';
 
 /**
  * Search for food spots by menu item name or vendor name.
@@ -8,6 +9,7 @@ import { supabase } from './supabase';
  *  2. Collect the unique vendor IDs
  *  3. Fetch those vendors (approved only)
  *  4. Attach matching items (with sizes) to each vendor
+ *  5. Sort by distance to user (if location available)
  *
  * @param {string}  query           - the search term (e.g. "beans and plantain")
  * @param {string|null} categoryFilter - 'restaurant' | 'roadside' | null
@@ -50,12 +52,37 @@ export async function searchFoodSpots(query, categoryFilter = null) {
     vendorMap.get(vendor.id).matchingItems.push(item);
   }
 
-  return { data: Array.from(vendorMap.values()), error: null };
+  let results = Array.from(vendorMap.values());
+
+  // ── Step 3: Sort by distance if available ────────────────────────────────
+  try {
+    const userLoc = await getUserLocation();
+    results = results.sort((a, b) => {
+      const distA = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        a.vendor.latitude,
+        a.vendor.longitude
+      );
+      const distB = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        b.vendor.latitude,
+        b.vendor.longitude
+      );
+      return distA - distB;
+    });
+  } catch (e) {
+    // Silently fail: geolocation unavailable or denied — keep default order
+  }
+
+  return { data: results, error: null };
 }
 
 /**
  * Fallback search — finds vendors whose business_name matches the query.
  * Used when no menu items match but a vendor name might.
+ * Sorts by distance if user location is available.
  * @param {string}      query
  * @param {string|null} categoryFilter
  * @returns {Promise<{data: SearchResult[], error: object|null}>}
@@ -72,14 +99,36 @@ async function searchByVendorName(query, categoryFilter) {
   const { data: vendors, error } = await q;
   if (error || !vendors) return { data: [], error };
 
-  return {
-    data: vendors.map((vendor) => ({ vendor, matchingItems: [] })),
-    error: null,
-  };
+  let results = vendors.map((vendor) => ({ vendor, matchingItems: [] }));
+
+  // Sort by distance if available
+  try {
+    const userLoc = await getUserLocation();
+    results = results.sort((a, b) => {
+      const distA = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        a.vendor.latitude,
+        a.vendor.longitude
+      );
+      const distB = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        b.vendor.latitude,
+        b.vendor.longitude
+      );
+      return distA - distB;
+    });
+  } catch (e) {
+    // Silently fail — keep default order
+  }
+
+  return { data: results, error: null };
 }
 
 /**
  * Get all approved vendors (used for browsing without a search query).
+ * Sorts by distance to user if location available, then by rating.
  * @param {string|null} categoryFilter
  * @returns {Promise<{data: SearchResult[], error: object|null}>}
  */
@@ -93,8 +142,31 @@ export async function getAllFoodSpots(categoryFilter = null) {
   if (categoryFilter) q = q.eq('category', categoryFilter);
 
   const { data, error } = await q;
-  return {
-    data: (data ?? []).map((vendor) => ({ vendor, matchingItems: [] })),
-    error,
-  };
+  if (error) return { data: [], error };
+
+  let results = (data ?? []).map((vendor) => ({ vendor, matchingItems: [] }));
+
+  // Sort by distance if available
+  try {
+    const userLoc = await getUserLocation();
+    results = results.sort((a, b) => {
+      const distA = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        a.vendor.latitude,
+        a.vendor.longitude
+      );
+      const distB = calculateDistance(
+        userLoc.lat,
+        userLoc.lng,
+        b.vendor.latitude,
+        b.vendor.longitude
+      );
+      return distA - distB;
+    });
+  } catch (e) {
+    // Silently fail — keep rating-based order
+  }
+
+  return { data: results, error };
 }
